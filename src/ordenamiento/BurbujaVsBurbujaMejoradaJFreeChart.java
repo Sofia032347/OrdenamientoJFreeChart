@@ -96,7 +96,7 @@ public class BurbujaVsBurbujaMejoradaJFreeChart {
         dataset.addSeries(serieBurbujaMejorada);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Comparación: Burbuja vs Burbuja Mejorada",
+                "Comparacion: Burbuja vs Burbuja Mejorada",
                 "Cantidad de Datos",
                 "Tiempo en nanosegundos",
                 dataset,
