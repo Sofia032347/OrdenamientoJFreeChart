@@ -1,132 +1,131 @@
 package ordenamiento;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.*;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
+import org.jfree.data.xy.*;
 import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class BurbujaMejoradaVsInsercion {
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese la cantidad máxima de datos a procesar: ");
+        int cant = sc.nextInt();
 
-    public static void burbujaMejorada(int[] arreglo) {
-        boolean intercambio;
-        for (int i = 0; i < arreglo.length - 1; i++) {
-            intercambio = false;
-            for (int j = 0; j < arreglo.length - 1 - i; j++) {
-                if (arreglo[j] > arreglo[j + 1]) {
-                    int temp = arreglo[j];
-                    arreglo[j] = arreglo[j + 1];
-                    arreglo[j + 1] = temp;
-                    intercambio = true;
-                }
-            }
-            if (!intercambio) {
-                break;
-            }
-        }
-    }
+        long simIni, simFin, simTot;
+        long tMejorada, tInsercion;
+        PrintStream archivo = new PrintStream("mejorada_vs_insercion.dat");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-    public static void insercion(int[] arreglo) {
-        for (int i = 1; i < arreglo.length; i++) {
-            int key = arreglo[i];
-            int j = i - 1;
-            while (j >= 0 && arreglo[j] > key) {
-                arreglo[j + 1] = arreglo[j];
-                j--;
-            }
-            arreglo[j + 1] = key;
-        }
-    }
+        System.out.println("\n------------------------------");
+        System.out.println("INICIO DE SIMULACION: " + dateFormat.format(new Date()));
+        simIni = System.nanoTime();
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int cant;
-
-        while (true) {
-            try {
-                System.out.print("Ingrese la cantidad de elementos para ordenar: ");
-                cant = Integer.parseInt(scanner.nextLine());
-                if (cant > 0) {
-                    break;
-                } else {
-                    System.out.println("Debe ingresar un número mayor a 0.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Por favor, ingrese un número válido.");
-            }
-        }
-
-        long inicio, fin, tiempoBurbujaMejorada, tiempoInsercion;
-        System.out.println("\nN° de elementos | Burbuja Mejorada (ns) | Inserción (ns)");
-
-        XYSeries serieBurbujaMejorada = new XYSeries("Burbuja Mejorada");
+        XYSeries serieMejorada = new XYSeries("Burbuja Mejorada");
         XYSeries serieInsercion = new XYSeries("Inserción");
 
-        for (int i = 1; i <= cant; i++) {
-            int[] arreglo1 = new int[i];
-            int[] arreglo2 = new int[i];
-            llenarDatos(arreglo1);
-            System.arraycopy(arreglo1, 0, arreglo2, 0, i);
+        for (int i = 1000; i <= cant; i += 1000) {
+            int[] arr1 = generarDatos(i);
+            int[] arr2 = arr1.clone();
 
-            inicio = System.nanoTime();
-            burbujaMejorada(arreglo1);
+            long ini = System.nanoTime();
+            burbujaMejorada(arr1);
+            long fin = System.nanoTime();
+            tMejorada = fin - ini;
+
+            ini = System.nanoTime();
+            insercion(arr2);
             fin = System.nanoTime();
-            tiempoBurbujaMejorada = fin - inicio;
+            tInsercion = fin - ini;
 
-            inicio = System.nanoTime();
-            insercion(arreglo2);
-            fin = System.nanoTime();
-            tiempoInsercion = fin - inicio;
+            serieMejorada.add(i, tMejorada);
+            serieInsercion.add(i, tInsercion);
 
-            serieBurbujaMejorada.add(i, tiempoBurbujaMejorada);
-            serieInsercion.add(i, tiempoInsercion);
-
-            System.out.printf("%14d | %20d | %15d %n", i, tiempoBurbujaMejorada, tiempoInsercion);
+            archivo.println(i + " " + tMejorada + " " + tInsercion);
         }
 
+        archivo.close();
+        simFin = System.nanoTime();
+        simTot = simFin - simIni;
+
+        System.out.println("FIN DE LA SIMULACION: " + dateFormat.format(new Date()));
+        System.out.println("TIEMPO TOTAL DE SIMULACION: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
+        System.out.println("------------------------------\n");
+
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(serieBurbujaMejorada);
+        dataset.addSeries(serieMejorada);
         dataset.addSeries(serieInsercion);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Comparación: Burbuja Mejorada vs Inserción",
+                "Burbuja Mejorada vs Inserción",
                 "Cantidad de Datos",
-                "Tiempo en nanosegundos",
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false
+                "Tiempo (ns)",
+                dataset
         );
 
         XYPlot plot = chart.getXYPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        XYSplineRenderer renderer = new XYSplineRenderer();
+        renderer.setSeriesStroke(0, new BasicStroke(3.0f));
+        renderer.setSeriesStroke(1, new BasicStroke(3.0f));
+        renderer.setSeriesShapesVisible(0, false);
+        renderer.setSeriesShapesVisible(1, false);
         plot.setRenderer(renderer);
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setAutoRangeIncludesZero(false);
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setAutoRangeIncludesZero(false);
 
-        JFrame frame = new JFrame("Gráfico de Comparación");
+        JFrame frame = new JFrame("Gráfica - Mejorada vs Inserción");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new ChartPanel(chart));
         frame.pack();
         frame.setVisible(true);
-
-        System.out.println("\nVentana de la gráfica abierta. Presione ENTER para cerrar...");
-        scanner.nextLine();
     }
 
-    public static void llenarDatos(int[] A) {
-        Random rand = new Random();
-        for (int i = 0; i < A.length; i++) {
-            A[i] = rand.nextInt(1000) + 1;
+    public static int[] generarDatos(int n) {
+        int[] datos = new int[n];
+        for (int i = 0; i < n; i++) {
+            datos[i] = (int)(Math.random() * 1000) + 1;
         }
+        return datos;
     }
+
+    public static void burbujaMejorada(int[] A) {
+        int pasadas = 0, comparaciones = 0;
+        boolean ordenado = false;
+        for (int i = 0; i < A.length && !ordenado; i++) {
+            ordenado = true;
+            pasadas++;
+            for (int j = 0; j < A.length - i - 1; j++) {
+                comparaciones++;
+                if (A[j] > A[j + 1]) {
+                    int tmp = A[j];
+                    A[j] = A[j + 1];
+                    A[j + 1] = tmp;
+                    ordenado = false;
+                }
+            }
+        }
+        System.out.printf("Mejorada: Pasadas = %d | Comparaciones = %d%n", pasadas, comparaciones);
+    }
+
+    public static void insercion(int[] A) {
+        int pasadas = 0, comparaciones = 0;
+        for (int i = 1; i < A.length; i++) {
+            int key = A[i];
+            int j = i - 1;
+            pasadas++;
+            while (j >= 0 && A[j] > key) {
+                comparaciones++;
+                A[j + 1] = A[j];
+                j--;
+            }
+            comparaciones++;
+            A[j + 1] = key;
+        }
+        System.out.printf("Inserción: Pasadas = %d | Comparaciones = %d%n", pasadas, comparaciones);
+    }
+}
+
 }
