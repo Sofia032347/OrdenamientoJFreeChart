@@ -1,4 +1,5 @@
 package ordenamiento;
+
 import org.jfree.chart.*;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -12,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class BurbujaMejoradaVsInsercion {
+
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Ingrese la cantidad máxima de datos a procesar: ");
@@ -86,7 +88,7 @@ public class BurbujaMejoradaVsInsercion {
     public static int[] generarDatos(int n) {
         int[] datos = new int[n];
         for (int i = 0; i < n; i++) {
-            datos[i] = (int)(Math.random() * 1000) + 1;
+            datos[i] = (int) (Math.random() * 1000) + 1;
         }
         return datos;
     }
@@ -126,6 +128,4 @@ public class BurbujaMejoradaVsInsercion {
         }
         System.out.printf("Inserción: Pasadas = %d | Comparaciones = %d%n", pasadas, comparaciones);
     }
-}
-
 }
