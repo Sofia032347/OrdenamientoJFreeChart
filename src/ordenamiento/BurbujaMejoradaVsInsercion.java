@@ -19,7 +19,7 @@ public class BurbujaMejoradaVsInsercion {
         do {
             System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 10000): ");
             cant = sc.nextInt();
-            if (cant < 10000) System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
+            if (cant < 10000) System.out.println("El minimo permitido es 10000. Intente nuevamente.\n");
         } while (cant < 10000);
 
         long simIni, simFin, simTot;
