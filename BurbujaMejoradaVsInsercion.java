@@ -1,11 +1,4 @@
-/***********************************************************************************************************
-* Nombre Clase: MejoradaVsInsercion
-* Propósito: Comparar el rendimiento de los algoritmos Burbuja Mejorada e Inserción.
-* Funcionalidades: Entrada de datos, generación aleatoria, ordenamientos, medición de tiempo, almacenamiento y gráfica.
-***********************************************************************************************************/
-
 package ordenamiento;
-
 import org.jfree.chart.*;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -17,7 +10,7 @@ import java.text.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class MejoradaVsInsercion {
+public class BurbujaMejoradaVsInsercion {
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
