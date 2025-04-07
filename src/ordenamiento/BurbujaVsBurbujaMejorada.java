@@ -65,8 +65,8 @@ public class BurbujaVsBurbujaMejorada {
         simFin = System.nanoTime();
         simTot = simFin - simIni;
 
-        System.out.println("FIN DE LA SIMULACIÓN: " + dateFormat.format(new Date()));
-        System.out.println("TIEMPO TOTAL DE SIMULACIÓN: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
+        System.out.println("FIN DE LA SIMULACION: " + dateFormat.format(new Date()));
+        System.out.println("TIEMPO TOTAL DE SIMULACION: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
         System.out.println("------------------------------\n");
 
         XYSeriesCollection dataset = new XYSeriesCollection();

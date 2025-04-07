@@ -28,7 +28,7 @@ public class BurbujaMejoradaVsInsercion {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         System.out.println("\n------------------------------");
-        System.out.println("INICIO DE SIMULACIÓN: " + dateFormat.format(new Date()));
+        System.out.println("INICIO DE SIMULACION: " + dateFormat.format(new Date()));
         simIni = System.nanoTime();
 
         XYSeries serieMejorada = new XYSeries("Burbuja Mejorada");
@@ -126,6 +126,6 @@ public class BurbujaMejoradaVsInsercion {
             }
             A[j + 1] = key;
         }
-        System.out.printf("Inserción: Comparaciones = %d%n", comparaciones);
+        System.out.printf("Insercion: Comparaciones = %d%n", comparaciones);
     }
 }

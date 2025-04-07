@@ -28,7 +28,7 @@ public class InsercionVsIntercalacion {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         System.out.println("\n------------------------------");
-        System.out.println("INICIO DE SIMULACIÓN: " + dateFormat.format(new Date()));
+        System.out.println("INICIO DE SIMULACION: " + dateFormat.format(new Date()));
         simIni = System.nanoTime();
 
         XYSeries serieInsercion = new XYSeries("Inserción");
@@ -57,8 +57,8 @@ public class InsercionVsIntercalacion {
         simFin = System.nanoTime();
         simTot = simFin - simIni;
 
-        System.out.println("FIN DE LA SIMULACIÓN: " + dateFormat.format(new Date()));
-        System.out.println("TIEMPO TOTAL DE SIMULACIÓN: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
+        System.out.println("FIN DE LA SIMULACION: " + dateFormat.format(new Date()));
+        System.out.println("TIEMPO TOTAL DE SIMULACION: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
         System.out.println("------------------------------\n");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -107,7 +107,7 @@ public class InsercionVsIntercalacion {
             }
             A[j + 1] = key;
         }
-        System.out.printf("Inserción: Comparaciones = %d%n", comparaciones);
+        System.out.printf("Insercion: Comparaciones = %d%n", comparaciones);
     }
     public static void intercalacion(int[] A, int low, int high) {
         if (low < high) {
