@@ -22,12 +22,12 @@ public class BurbujaVsBurbujaMejorada {
         Scanner sc = new Scanner(System.in);
         int cant;
         do {
-            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 100): ");
+            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 10000): ");
             cant = sc.nextInt();
-            if (cant < 100) {
-                System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
+            if (cant < 10000) {
+                System.out.println("El minimo permitido es 10000. Intente nuevamente.\n");
             }
-        } while (cant < 100);
+        } while (cant < 10000);
 
         long simIni, simFin, simTot;
         long tBurbuja, tMejorada;
@@ -41,7 +41,7 @@ public class BurbujaVsBurbujaMejorada {
         XYSeries serieBurbuja = new XYSeries("Burbuja");
         XYSeries serieMejorada = new XYSeries("Burbuja Mejorada");
 
-        for (int i = 100; i <= cant; i += 100) {
+        for (int i = 100; i <= cant; i += 1000) {
             int[] arr1 = generarDatos(i);
             int[] arr2 = arr1.clone();
 

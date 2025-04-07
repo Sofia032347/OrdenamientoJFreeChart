@@ -17,10 +17,10 @@ public class BurbujaMejoradaVsInsercion {
         Scanner sc = new Scanner(System.in);
         int cant;
         do {
-            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 100): ");
+            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 10000): ");
             cant = sc.nextInt();
-            if (cant < 100) System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
-        } while (cant < 100);
+            if (cant < 10000) System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
+        } while (cant < 10000);
 
         long simIni, simFin, simTot;
         long tMejorada, tInsercion;
