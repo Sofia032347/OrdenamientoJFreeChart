@@ -1,5 +1,4 @@
 package ordenamiento;
-
 import org.jfree.chart.*;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -7,29 +6,34 @@ import org.jfree.data.xy.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class InsercionVsIntercalacion {
+
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Ingrese la cantidad máxima de datos a procesar: ");
-        int cant = sc.nextInt();
+        int cant;
+        do {
+            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 100): ");
+            cant = sc.nextInt();
+            if (cant < 100) System.out.println(" El minimo permitido es 100. Intente nuevamente.\n");
+        } while (cant < 100);
 
         long simIni, simFin, simTot;
-        long tInsercion, tMerge;
+        long tInsercion, tIntercalacion;
         PrintStream archivo = new PrintStream("insercion_vs_intercalacion.dat");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         System.out.println("\n------------------------------");
-        System.out.println("INICIO DE SIMULACION: " + dateFormat.format(new Date()));
+        System.out.println("INICIO DE SIMULACIÓN: " + dateFormat.format(new Date()));
         simIni = System.nanoTime();
 
         XYSeries serieInsercion = new XYSeries("Inserción");
-        XYSeries serieMerge = new XYSeries("Intercalación");
+        XYSeries serieIntercalacion = new XYSeries("Intercalación");
 
-        for (int i = 1000; i <= cant; i += 1000) {
+        for (int i = 100; i <= cant; i += 1000) {
             int[] arr1 = generarDatos(i);
             int[] arr2 = arr1.clone();
 
@@ -39,27 +43,26 @@ public class InsercionVsIntercalacion {
             tInsercion = fin - ini;
 
             ini = System.nanoTime();
-            mergeSort(arr2, 0, arr2.length - 1);
+            intercalacion(arr2, 0, arr2.length - 1);
             fin = System.nanoTime();
-            tMerge = fin - ini;
+            tIntercalacion = fin - ini;
 
             serieInsercion.add(i, tInsercion);
-            serieMerge.add(i, tMerge);
-
-            archivo.println(i + " " + tInsercion + " " + tMerge);
+            serieIntercalacion.add(i, tIntercalacion);
+            archivo.println(i + " " + tInsercion + " " + tIntercalacion);
         }
 
         archivo.close();
         simFin = System.nanoTime();
         simTot = simFin - simIni;
 
-        System.out.println("FIN DE LA SIMULACION: " + dateFormat.format(new Date()));
-        System.out.println("TIEMPO TOTAL DE SIMULACION: " + java.util.concurrent.TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
+        System.out.println("FIN DE LA SIMULACIÓN: " + dateFormat.format(new Date()));
+        System.out.println("TIEMPO TOTAL DE SIMULACIÓN: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
         System.out.println("------------------------------\n");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(serieInsercion);
-        dataset.addSeries(serieMerge);
+        dataset.addSeries(serieIntercalacion);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "Inserción vs Intercalación",
@@ -90,57 +93,39 @@ public class InsercionVsIntercalacion {
         }
         return datos;
     }
-
+    
     public static void insercion(int[] A) {
-        int pasadas = 0, comparaciones = 0;
+        int comparaciones = 0;
         for (int i = 1; i < A.length; i++) {
             int key = A[i];
             int j = i - 1;
-            pasadas++;
             while (j >= 0 && A[j] > key) {
                 comparaciones++;
                 A[j + 1] = A[j];
                 j--;
             }
-            comparaciones++;
             A[j + 1] = key;
         }
-        System.out.printf("Inserción: Pasadas = %d | Comparaciones = %d%n", pasadas, comparaciones);
+        System.out.printf("Inserción: Comparaciones = %d%n", comparaciones);
+    }
+    public static void intercalacion(int[] A, int low, int high) {
+        if (low < high) {
+            int mid = (low + high) / 2;
+            intercalacion(A, low, mid);
+            intercalacion(A, mid + 1, high);
+            mezclar(A, low, mid, high);
+        }
     }
 
-    public static void mergeSort(int[] A, int izq, int der) {
-        if (izq < der) {
-            int mid = (izq + der) / 2;
-            mergeSort(A, izq, mid);
-            mergeSort(A, mid + 1, der);
-            intercalar(A, izq, mid, der);
+    public static void mezclar(int[] A, int low, int mid, int high) {
+        int[] B = new int[A.length];
+        int i = low, j = mid + 1, k = low;
+        while (i <= mid && j <= high) {
+            if (A[i] <= A[j]) B[k++] = A[i++];
+            else B[k++] = A[j++];
         }
-    }
-
-    public static void intercalar(int[] A, int izq, int mid, int der) {
-        int n1 = mid - izq + 1;
-        int n2 = der - mid;
-
-        int[] L = new int[n1];
-        int[] R = new int[n2];
-
-        System.arraycopy(A, izq, L, 0, n1);
-        System.arraycopy(A, mid + 1, R, 0, n2);
-
-        int i = 0, j = 0, k = izq;
-        while (i < n1 && j < n2) {
-            if (L[i] <= R[j]) {
-                A[k++] = L[i++];
-            } else {
-                A[k++] = R[j++];
-            }
-        }
-
-        while (i < n1) {
-            A[k++] = L[i++];
-        }
-        while (j < n2) {
-            A[k++] = R[j++];
-        }
+        while (i <= mid) B[k++] = A[i++];
+        while (j <= high) B[k++] = A[j++];
+        for (i = low; i <= high; i++) A[i] = B[i];
     }
 }
