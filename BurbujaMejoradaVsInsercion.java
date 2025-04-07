@@ -1,4 +1,11 @@
+/***********************************************************************************************************
+* Nombre Clase: MejoradaVsInsercion
+* Propósito: Comparar el rendimiento de los algoritmos Burbuja Mejorada e Inserción.
+* Funcionalidades: Entrada de datos, generación aleatoria, ordenamientos, medición de tiempo, almacenamiento y gráfica.
+***********************************************************************************************************/
+
 package ordenamiento;
+
 import org.jfree.chart.*;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -6,16 +13,20 @@ import org.jfree.data.xy.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BurbujaMejoradaVsInsercion {
+public class MejoradaVsInsercion {
+
     public static void main(String[] args) throws FileNotFoundException {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Ingrese la cantidad máxima de datos a procesar: ");
-        int cant = sc.nextInt();
+        int cant;
+        do {
+            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 100): ");
+            cant = sc.nextInt();
+            if (cant < 100) System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
+        } while (cant < 100);
 
         long simIni, simFin, simTot;
         long tMejorada, tInsercion;
@@ -23,13 +34,13 @@ public class BurbujaMejoradaVsInsercion {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         System.out.println("\n------------------------------");
-        System.out.println("INICIO DE SIMULACION: " + dateFormat.format(new Date()));
+        System.out.println("INICIO DE SIMULACIÓN: " + dateFormat.format(new Date()));
         simIni = System.nanoTime();
 
         XYSeries serieMejorada = new XYSeries("Burbuja Mejorada");
         XYSeries serieInsercion = new XYSeries("Inserción");
 
-        for (int i = 1000; i <= cant; i += 1000) {
+        for (int i = 100; i <= cant; i += 1000) {
             int[] arr1 = generarDatos(i);
             int[] arr2 = arr1.clone();
 
@@ -45,7 +56,6 @@ public class BurbujaMejoradaVsInsercion {
 
             serieMejorada.add(i, tMejorada);
             serieInsercion.add(i, tInsercion);
-
             archivo.println(i + " " + tMejorada + " " + tInsercion);
         }
 
@@ -76,7 +86,7 @@ public class BurbujaMejoradaVsInsercion {
         renderer.setSeriesShapesVisible(1, false);
         plot.setRenderer(renderer);
 
-        JFrame frame = new JFrame("Gráfica - Mejorada vs Inserción");
+        JFrame frame = new JFrame("Gráfica - Burbuja Mejorada vs Inserción");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new ChartPanel(chart));
         frame.pack();
@@ -111,19 +121,17 @@ public class BurbujaMejoradaVsInsercion {
     }
 
     public static void insercion(int[] A) {
-        int pasadas = 0, comparaciones = 0;
+        int comparaciones = 0;
         for (int i = 1; i < A.length; i++) {
             int key = A[i];
             int j = i - 1;
-            pasadas++;
             while (j >= 0 && A[j] > key) {
                 comparaciones++;
                 A[j + 1] = A[j];
                 j--;
             }
-            comparaciones++;
             A[j + 1] = key;
         }
-        System.out.printf("Inserción: Pasadas = %d | Comparaciones = %d%n", pasadas, comparaciones);
+        System.out.printf("Inserción: Comparaciones = %d%n", comparaciones);
     }
 }
