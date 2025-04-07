@@ -8,7 +8,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,10 +17,16 @@ import java.util.concurrent.TimeUnit;
 
 public class BurbujaVsBurbujaMejorada {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Ingrese la cantidad máxima de datos a procesar: ");
-        int cant = sc.nextInt();
+        int cant;
+        do {
+            System.out.print("Ingrese la cantidad maxima de datos a procesar (minimo 100): ");
+            cant = sc.nextInt();
+            if (cant < 100) {
+                System.out.println("El minimo permitido es 100. Intente nuevamente.\n");
+            }
+        } while (cant < 100);
 
         long simIni, simFin, simTot;
         long tBurbuja, tMejorada;
@@ -35,7 +40,7 @@ public class BurbujaVsBurbujaMejorada {
         XYSeries serieBurbuja = new XYSeries("Burbuja");
         XYSeries serieMejorada = new XYSeries("Burbuja Mejorada");
 
-        for (int i = 1000; i <= cant; i += 1000) {
+        for (int i = 100; i <= cant; i += 100) {
             int[] arr1 = generarDatos(i);
             int[] arr2 = arr1.clone();
 
@@ -59,8 +64,8 @@ public class BurbujaVsBurbujaMejorada {
         simFin = System.nanoTime();
         simTot = simFin - simIni;
 
-        System.out.println("FIN DE LA SIMULACION: " + dateFormat.format(new Date()));
-        System.out.println("TIEMPO TOTAL DE SIMULACION: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
+        System.out.println("FIN DE LA SIMULACIÓN: " + dateFormat.format(new Date()));
+        System.out.println("TIEMPO TOTAL DE SIMULACIÓN: " + TimeUnit.NANOSECONDS.toMinutes(simTot) + " min");
         System.out.println("------------------------------\n");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -117,7 +122,7 @@ public class BurbujaVsBurbujaMejorada {
         int pasadas = 0, comparaciones = 0;
         boolean ordenado = false;
         for (int i = 0; i < A.length && !ordenado; i++) {
-            ordenado = true;
+            ordenado = true; // 🏁 Bandera para detectar si ya está ordenado
             pasadas++;
             for (int j = 0; j < A.length - i - 1; j++) {
                 comparaciones++;
